@@ -44,6 +44,8 @@ html, body {
 
 /* Main Content Container */
 .main-container {
+    position: relative; /* Ensures proper layering */
+    z-index: 1; /* Keeps content above the background */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -244,3 +246,4 @@ input[type="file"] {
         font-size: 1rem;
     }
 }
+
