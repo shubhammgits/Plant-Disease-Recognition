@@ -3,9 +3,14 @@ import numpy as np
 import json
 import uuid
 import tensorflow as tf
+import os
 
 app = Flask(__name__)
-model = tf.keras.models.load_model("models\plant_disease_recog_model.keras")
+
+# Use forward slashes for better compatibility
+model_path = "models/plant_disease_recog_model.keras"
+model = tf.keras.models.load_model(model_path)
+
 label = ['Apple___Apple_scab',
  'Apple___Black_rot',
  'Apple___Cedar_apple_rust',
@@ -52,7 +57,7 @@ with open("plant_disease.json",'r') as file:
 
 @app.route('/uploadimages/<path:filename>')
 def uploaded_images(filename):
-    return send_from_directory('./uploadimages', filename)
+    return send_from_directory('uploadimages', filename)
 
 @app.route('/',methods = ['GET'])
 def home():
@@ -75,15 +80,23 @@ def model_predict(image):
 def uploadimage():
     if request.method == "POST":
         image = request.files['img']
-        temp_name = f"uploadimages/temp_{uuid.uuid4().hex}"
-        image.save(f'{temp_name}_{image.filename}')
-        print(f'{temp_name}_{image.filename}')
-        prediction = model_predict(f'./{temp_name}_{image.filename}')
-        return render_template('home.html',result=True,imagepath = f'/{temp_name}_{image.filename}', prediction = prediction )
-    
-    else:
-        return redirect('/')
+        # Ensure the upload directory exists
+        upload_folder = 'uploadimages'
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+            
+        filename = f"temp_{uuid.uuid4().hex}_{image.filename}"
+        image_path = os.path.join(upload_folder, filename)
+        image.save(image_path)
         
-    
-if __name__ == "__main__":
+        print(image_path)
+        prediction = model_predict(image_path)
+        
+        # We need to pass the URL path to the template, not the file system path
+        image_url = url_for('uploaded_images', filename=filename)
+        
+        return render_template('home.html',result = "True",prediction = prediction, imagepath = image_url)
+    return redirect('/')
+
+if __name__ == '__main__':
     app.run(debug=True)
