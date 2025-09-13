@@ -7,7 +7,6 @@ import os
 
 app = Flask(__name__)
 
-# Use forward slashes for better compatibility
 model_path = "models/plant_disease_recog_model.keras"
 model = tf.keras.models.load_model(model_path)
 
@@ -72,7 +71,6 @@ def extract_features(image):
 def model_predict(image):
     img = extract_features(image)
     prediction = model.predict(img)
-    # print(prediction)
     prediction_label = plant_disease[prediction.argmax()]
     return prediction_label
 
@@ -80,7 +78,6 @@ def model_predict(image):
 def uploadimage():
     if request.method == "POST":
         image = request.files['img']
-        # Ensure the upload directory exists
         upload_folder = 'uploadimages'
         if not os.path.exists(upload_folder):
             os.makedirs(upload_folder)
@@ -92,7 +89,6 @@ def uploadimage():
         print(image_path)
         prediction = model_predict(image_path)
         
-        # We need to pass the URL path to the template, not the file system path
         image_url = url_for('uploaded_images', filename=filename)
         
         return render_template('home.html',result = "True",prediction = prediction, imagepath = image_url)
