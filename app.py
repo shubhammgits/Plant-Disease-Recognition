@@ -49,7 +49,6 @@ label = ['Apple___Apple_scab',
 with open("plant_disease.json",'r') as file:
     plant_disease = json.load(file)
 
-# print(plant_disease[4])
 
 @app.route('/uploadimages/<path:filename>')
 def uploaded_images(filename):
