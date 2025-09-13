@@ -5,7 +5,7 @@ import uuid
 import tensorflow as tf
 
 app = Flask(__name__)
-model = tf.keras.models.load_model("models/plant_disease_recog_model_pwp.keras")
+model = tf.keras.models.load_model("models\plant_disease_recog_model.keras")
 label = ['Apple___Apple_scab',
  'Apple___Black_rot',
  'Apple___Cedar_apple_rust',
