@@ -1,12 +1,10 @@
-/* Google Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-/* Reset and Basic Setup */
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+} */
 
 html, body {
     height: 100%;
@@ -15,7 +13,6 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Background Video Styling */
 .video-background {
     position: fixed;
     top: 0;
@@ -31,7 +28,6 @@ html, body {
     object-fit: cover;
 }
 
-/* Overlay to darken the video and improve text readability */
 .overlay {
     position: fixed;
     top: 0;
@@ -42,10 +38,9 @@ html, body {
     z-index: -1;
 }
 
-/* Main Content Container */
 .main-container {
-    position: relative; /* Ensures proper layering */
-    z-index: 1; /* Keeps content above the background */
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,7 +64,6 @@ html, body {
     max-width: 600px;
 }
 
-/* Wrapper for Upload and Result boxes */
 .content-wrapper {
     display: flex;
     justify-content: center;
@@ -79,7 +73,6 @@ html, body {
     max-width: 1200px;
 }
 
-/* Shared Box Styling */
 .upload-box, .result-box {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -91,7 +84,7 @@ html, body {
 }
 
 .upload-box {
-    flex-basis: 400px; /* Minimum width */
+    flex-basis: 400px;
     max-width: 500px;
 }
 
@@ -109,7 +102,6 @@ html, body {
     display: inline-block;
 }
 
-/* Form Styling */
 .input-box {
     margin: 1.5rem 0;
     background: rgba(0,0,0,0.3);
@@ -121,7 +113,7 @@ html, body {
 }
 
 input[type="file"] {
-    display: none; /* Hide the default file input */
+    display: none;
 }
 
 .custom-file-upload {
@@ -163,8 +155,6 @@ input[type="file"] {
     box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
 }
 
-
-/* Result Box Styling */
 .result-content {
     display: flex;
     gap: 1.5rem;
@@ -199,7 +189,6 @@ input[type="file"] {
     color: #1abc9c;
 }
 
-/* Media Queries for Responsiveness */
 @media (max-width: 992px) {
     .content-wrapper {
         flex-direction: column;
