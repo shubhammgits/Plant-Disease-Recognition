@@ -273,10 +273,10 @@ The dataset contains images of plant leaves with various diseases and healthy co
 ## 🖥️ System Interface
 
 ### Main Interface
-![Main Interface](assets/main-interface.png)
+<img src="static/images/home1.png" alt="Main Interface">
 
 ### Disease Detection Result
-![Detection Result](assets/detection-result.png)
+<img src="static/images/home2.png" alt="Disease Detection Result">
 
 The web interface features:
 - **Clean, Modern Design**: Intuitive user experience with beautiful animations
