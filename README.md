@@ -52,7 +52,10 @@ Our deep learning model uses a custom CNN architecture optimized for plant disea
 - **Dense Layers**: Fully connected layers for final classification
 - **Output Layer**: 39-class softmax layer for disease prediction
 
-<img src="static/images/model_architecture.png" alt="Model Architecture" width="45%">
+<div align="center">
+  <img src="static/images/model_arch1.png" alt="Model Architecture" width="45%" style="margin-right: 2%;">
+  <img src="static/images/model_arch2.png" alt="Model Architecture" width="45%">
+</div>
 
 ## 🏗️ How It's Made
 
@@ -187,75 +190,6 @@ Werkzeug==2.3.7
    - Click "Diagnose" to analyze the image
    - View results with disease information and treatment recommendations
 
-## 🎯 Supported Plant Diseases
-
-The system can identify the following conditions across 14 plant species:
-
-### 🍎 Apple
-- Apple Scab
-- Black Rot
-- Cedar Apple Rust
-- Healthy
-
-### 🫐 Blueberry
-- Healthy
-
-### 🍒 Cherry
-- Powdery Mildew
-- Healthy
-
-### 🌽 Corn
-- Cercospora Leaf Spot (Gray Leaf Spot)
-- Common Rust
-- Northern Leaf Blight
-- Healthy
-
-### 🍇 Grape
-- Black Rot
-- Esca (Black Measles)
-- Leaf Blight (Isariopsis Leaf Spot)
-- Healthy
-
-### 🍊 Orange
-- Huanglongbing (Citrus Greening)
-
-### 🍑 Peach
-- Bacterial Spot
-- Healthy
-
-### 🌶️ Pepper (Bell)
-- Bacterial Spot
-- Healthy
-
-### 🥔 Potato
-- Early Blight
-- Late Blight
-- Healthy
-
-### 🫐 Raspberry
-- Healthy
-
-### 🌱 Soybean
-- Healthy
-
-### 🎃 Squash
-- Powdery Mildew
-
-### 🍓 Strawberry
-- Leaf Scorch
-- Healthy
-
-### 🍅 Tomato
-- Bacterial Spot
-- Early Blight
-- Late Blight
-- Leaf Mold
-- Septoria Leaf Spot
-- Spider Mites (Two-spotted)
-- Target Spot
-- Tomato Yellow Leaf Curl Virus
-- Tomato Mosaic Virus
-- Healthy
 
 ## 📊 Dataset Information
 
