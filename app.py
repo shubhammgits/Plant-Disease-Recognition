@@ -2,37 +2,13 @@ from flask import Flask, render_template,request,redirect,send_from_directory,ur
 import numpy as np
 import json
 import uuid
+import tensorflow as tf
 import os
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Try to import TensorFlow with fallback
-try:
-    import tensorflow as tf
-    # Suppress TensorFlow warnings
-    tf.get_logger().setLevel('ERROR')
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-    logger.info("TensorFlow imported successfully")
-except ImportError as e:
-    logger.error(f"Failed to import TensorFlow: {e}")
-    tf = None
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# Load model with error handling
-try:
-    if tf is None:
-        raise Exception("TensorFlow not available")
-    model_path = "models/plant_disease_recog_model.keras"
-    model = tf.keras.models.load_model(model_path)
-    logger.info("Model loaded successfully")
-except Exception as e:
-    logger.error(f"Error loading model: {str(e)}")
-    model = None
+model_path = "models/plant_disease_recog_model.keras"
+model = tf.keras.models.load_model(model_path)
 
 label = ['Apple___Apple_scab',
  'Apple___Black_rot',
@@ -91,16 +67,12 @@ def home():
     return render_template('home.html')
 
 def extract_features(image):
-    if tf is None:
-        raise Exception("TensorFlow not available")
     image = tf.keras.utils.load_img(image,target_size=(160,160))
     feature = tf.keras.utils.img_to_array(image)
     feature = np.array([feature])
     return feature
 
 def model_predict(image):
-    if model is None:
-        raise Exception("Model not loaded")
     img = extract_features(image)
     prediction = model.predict(img)
     prediction_label = plant_disease[prediction.argmax()]
@@ -128,12 +100,6 @@ def uploadimage():
             print(image_path)
             prediction = model_predict(image_path)
             
-            # Clean up uploaded file after prediction
-            try:
-                os.remove(image_path)
-            except:
-                pass  # If file deletion fails, continue
-            
             image_url = url_for('uploaded_images', filename=filename)
             
             return jsonify({
@@ -152,5 +118,4 @@ def uploadimage():
     return redirect('/')
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True)
