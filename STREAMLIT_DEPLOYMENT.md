@@ -112,9 +112,34 @@ Streamlit will automatically redeploy!
 ### 🛠️ Troubleshooting
 
 #### Common Issues:
-1. **Build fails**: Check `requirements.txt` format
-2. **Model not found**: Ensure `models/` folder is in repository
-3. **Large file error**: Model size should be <25MB (yours is ~24MB ✅)
+
+1. **"installer returned a non-zero exit code" Error**
+   - This indicates dependency version conflicts
+   - **Solution**: Use the updated requirements.txt with older, stable versions
+   - If still failing, replace requirements.txt with:
+   ```txt
+   streamlit
+   tensorflow-cpu
+   numpy
+   Pillow
+   ```
+   (This uses latest compatible versions automatically)
+
+2. **Build fails**: Check `requirements.txt` format
+3. **Model not found**: Ensure `models/` folder is in repository
+4. **Large file error**: Model size should be <25MB (yours is ~24MB ✅)
+
+#### Quick Fix for Dependency Issues:
+If the deployment keeps failing, try this minimal requirements.txt:
+```txt
+streamlit==1.25.0
+tensorflow-cpu==2.10.0
+numpy==1.21.6
+Pillow==8.4.0
+```
+
+#### Emergency Backup:
+Use `requirements-backup.txt` (rename to `requirements.txt`) for guaranteed compatibility.
 
 ### 🎉 Success!
 Your Plant Disease Recognition System is now live and accessible worldwide!
