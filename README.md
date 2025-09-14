@@ -52,7 +52,7 @@ Our deep learning model uses a custom CNN architecture optimized for plant disea
 - **Dense Layers**: Fully connected layers for final classification
 - **Output Layer**: 39-class softmax layer for disease prediction
 
-<img src="static/images/model_architecture.png" alt="Model Architecture" width="45%" style="margin-left: 2%; margin-right: 2%;">
+<img src="static/images/model_architecture.png" alt="Model Architecture" width="45%">
 
 ## 🏗️ How It's Made
 
@@ -89,11 +89,10 @@ The model was trained using a comprehensive dataset with the following approach:
 - **Validation Strategy**: 80-20 train-validation split
 - **Final Model Size**: ~24MB
 
-![Training Accuracy](assets/training-accuracy.png)
-*Training and Validation Accuracy Over Epochs*
-
-![Training Loss](assets/training-loss.png)
-*Training and Validation Loss Over Epochs*
+<div align="center">
+  <img src="static/images/training_acc.png" alt="Training Accuracy" width="45%" style="margin-right: 2%;">
+  <img src="static/images/training_loss.png" alt="Training Loss" width="45%">
+</div>
 
 ### Model Performance Metrics
 - **Overall Accuracy**: 97.11%
