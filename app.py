@@ -4,11 +4,23 @@ import json
 import uuid
 import tensorflow as tf
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-model_path = "models/plant_disease_recog_model.keras"
-model = tf.keras.models.load_model(model_path)
+# Load model with error handling
+try:
+    model_path = "models/plant_disease_recog_model.keras"
+    model = tf.keras.models.load_model(model_path)
+    logger.info("Model loaded successfully")
+except Exception as e:
+    logger.error(f"Error loading model: {str(e)}")
+    model = None
 
 label = ['Apple___Apple_scab',
  'Apple___Black_rot',
@@ -73,6 +85,8 @@ def extract_features(image):
     return feature
 
 def model_predict(image):
+    if model is None:
+        raise Exception("Model not loaded")
     img = extract_features(image)
     prediction = model.predict(img)
     prediction_label = plant_disease[prediction.argmax()]
@@ -100,6 +114,12 @@ def uploadimage():
             print(image_path)
             prediction = model_predict(image_path)
             
+            # Clean up uploaded file after prediction
+            try:
+                os.remove(image_path)
+            except:
+                pass  # If file deletion fails, continue
+            
             image_url = url_for('uploaded_images', filename=filename)
             
             return jsonify({
@@ -118,4 +138,5 @@ def uploadimage():
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
