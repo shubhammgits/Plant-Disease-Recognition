@@ -41,22 +41,18 @@
     </main>
 
     <script>
-        // File upload handler
         document.getElementById('file-upload').addEventListener('change', function() {
             var fileName = this.files[0] ? this.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
         });
 
-        // Ensure video keeps playing after page load
         document.addEventListener('DOMContentLoaded', function() {
             var bgVideo = document.getElementById('bg-video');
             if (bgVideo) {
-                // Force video to play and loop
                 bgVideo.muted = true;
                 bgVideo.loop = true;
                 bgVideo.autoplay = true;
                 
-                // Try to play the video
                 var playPromise = bgVideo.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(function(error) {
@@ -66,7 +62,6 @@
             }
         });
 
-        // AJAX form submission to avoid page reload and maintain video
         document.getElementById('upload-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -74,11 +69,9 @@
             var submitBtn = document.querySelector('.submit-btn');
             var originalText = submitBtn.textContent;
             
-            // Show loading state
             submitBtn.textContent = 'Analyzing...';
             submitBtn.disabled = true;
             
-            // Hide any existing result
             var existingResult = document.querySelector('.result-box');
             if (existingResult) {
                 existingResult.remove();
@@ -90,12 +83,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Reset button
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 
                 if (data.success) {
-                    // Create result box
                     var resultBox = document.createElement('div');
                     resultBox.className = 'result-box';
                     resultBox.innerHTML = `
@@ -112,7 +103,6 @@
                         </div>
                     `;
                     
-                    // Add result box to content wrapper
                     document.querySelector('.content-wrapper').appendChild(resultBox);
                 } else {
                     alert('Error: ' + data.error);
