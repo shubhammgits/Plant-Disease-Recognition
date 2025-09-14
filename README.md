@@ -334,16 +334,11 @@ We welcome contributions to improve the Plant Disease Recognition System! Here's
 - Implementing API endpoints
 - Adding multi-language support
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 📞 Contact
 
-- **Project Maintainer**: [Your Name]
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- **Project Maintainer**: Shubham Kumar
+- **Email**: shubhamm18.work@gmail.com
+- **LinkedIn**: [Shubham Kumar](https://www.linkedin.com/in/shhshubham/)
 
 ## 🙏 Acknowledgments
 
