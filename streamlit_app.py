@@ -12,6 +12,7 @@ st.set_page_config(
     layout="centered"
 )
 
+
 # Load model and disease info
 @st.cache_resource
 def load_model():
