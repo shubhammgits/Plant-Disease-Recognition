@@ -12,6 +12,33 @@ st.set_page_config(
     layout="centered"
 )
 
+# Custom CSS for better styling
+st.markdown("""
+<style>
+    .main {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    .stApp {
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    }
+    .uploadedFile {
+        border-radius: 10px;
+    }
+    .stButton>button {
+        background: linear-gradient(45deg, #1abc9c, #16a085);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+    .stProgress .st-bo {
+        background-color: #1abc9c;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 
 # Load model and disease info
 @st.cache_resource
@@ -32,32 +59,45 @@ def load_disease_info():
         return []
 
 def predict_disease(image, model, disease_info):
-    # Resize image to model's expected input size
-    image = image.resize((160, 160))
+    # Save uploaded image temporarily to match Flask processing
+    import tempfile
+    import os
     
-    # Convert to RGB if necessary
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
+    # Create temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
+        image.save(tmp_file.name)
+        temp_path = tmp_file.name
     
-    # Convert to array and normalize
-    img_array = np.array(image)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array = img_array.astype('float32') / 255.0
-    
-    # Make prediction
-    prediction = model.predict(img_array)
-    predicted_class = np.argmax(prediction)
-    confidence = np.max(prediction) * 100
-    
-    return disease_info[predicted_class], confidence
+    try:
+        # Use EXACT same preprocessing as Flask app
+        loaded_image = tf.keras.utils.load_img(temp_path, target_size=(160, 160))
+        img_array = tf.keras.utils.img_to_array(loaded_image)
+        img_array = np.array([img_array])  # Add batch dimension
+        
+        # Make prediction
+        prediction = model.predict(img_array)
+        predicted_class = np.argmax(prediction)
+        confidence = float(np.max(prediction) * 100)  # Convert to Python float
+        
+        return disease_info[predicted_class], confidence
+        
+    finally:
+        # Clean up temporary file
+        try:
+            os.unlink(temp_path)
+        except:
+            pass
 
 # Main app
 def main():
-    # Header
-    st.title("🌱 Plant Disease Recognition System")
-    st.markdown("---")
-    st.write("Upload an image of a plant leaf to identify diseases and get treatment recommendations.")
-    st.write("**Supported plants:** Apple, Blueberry, Cherry, Corn, Grape, Orange, Peach, Pepper, Potato, Raspberry, Soybean, Squash, Strawberry, Tomato")
+    # Header with Flask-like styling
+    st.markdown("""
+    <div style='text-align: center; padding: 2rem; background: rgba(0,0,0,0.1); border-radius: 15px; margin-bottom: 2rem;'>
+        <h1 style='color: #1abc9c; font-size: 3rem; margin-bottom: 1rem;'>🌱 Plant Disease Recognition System</h1>
+        <p style='font-size: 1.2rem; color: #ecf0f1;'>Upload an image of a plant leaf to identify diseases and get treatment recommendations.</p>
+        <p style='font-size: 1rem; color: #bdc3c7;'><strong>Supported plants:</strong> Apple, Blueberry, Cherry, Corn, Grape, Orange, Peach, Pepper, Potato, Raspberry, Soybean, Squash, Strawberry, Tomato</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Load model and data
     with st.spinner('Loading AI model...'):
@@ -128,7 +168,7 @@ def main():
                         st.markdown(f"**📊 Confidence:** {confidence:.1f}%")
                         
                         # Progress bar for confidence
-                        st.progress(confidence/100)
+                        st.progress(float(confidence/100))
                         
                         # Cause and treatment
                         st.markdown("**🦠 Cause:**")
