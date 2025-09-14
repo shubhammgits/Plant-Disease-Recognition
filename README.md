@@ -7,8 +7,7 @@
 
 A sophisticated deep learning-powered web application that identifies plant diseases from leaf images and provides actionable treatment recommendations. Built with TensorFlow and Flask, this system achieves **97.11% accuracy** in detecting 39 different plant diseases across multiple crop species.
 
-![Plant Disease Recognition System]("static\images\home1.png")
-![Plant Disease Recognition System]("static\images\home2.png")
+<img src="static/images/home.png" alt="Home Page"><br>\r\n<img src="static/images/home2.png" alt="Disease Page">\r\n
 
 ## 🎯 About This Project
 
