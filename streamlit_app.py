@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import json
 from PIL import Image
-import io
+import base64
 
 # Page configuration
 st.set_page_config(
@@ -13,28 +13,63 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Enhanced CSS to match Flask app exactly
-st.markdown("""
+# Function to get video as base64
+def get_video_as_base64(path):
+    with open(path, "rb") as video_file:
+        return base64.b64encode(video_file.read()).decode()
+
+# Note: You need to have the video file in a path accessible by the script.
+# For this example, let's assume it's in a 'static/images' folder relative to the script.
+# If you are deploying on Streamlit Cloud, you'll need to include this video file in your repo.
+try:
+    video_base64 = get_video_as_base64("static/images/166823-835662276.mp4")
+except FileNotFoundError:
+    # A fallback solid color or gradient if the video is not found
+    video_base64 = None
+
+
+# --- CSS Styling ---
+# This CSS is a combination of your style.css and some Streamlit-specific tweaks.
+st.markdown(f"""
 <style>
-    /* Hide Streamlit branding completely */
-    #MainMenu {visibility: hidden;}
-    .stDeployButton {display:none;}
-    footer {visibility: hidden;}
-    .stApp > header {visibility: hidden;}
-    .stSidebar {display: none;}
-    
-    /* Full screen background like Flask */
-    .stApp {
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23134e5e;stop-opacity:1" /><stop offset="100%" style="stop-color:%23071e26;stop-opacity:1" /></radialGradient></defs><rect width="1920" height="1080" fill="url(%23bg)"/><circle cx="200" cy="200" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="400" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="1200" cy="300" r="4" fill="rgba(255,255,255,0.1)"/><circle cx="1600" cy="700" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-        background-size: cover;
-        background-attachment: fixed;
-        color: white;
-        font-family: 'Poppins', sans-serif;
-    }
-    
-    /* Main container styling exactly like Flask */
-    .main-content {
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+    /* Hide Streamlit's default components */
+    #MainMenu, .stDeployButton, footer, .stApp > header {{
+        visibility: hidden;
+    }}
+
+    /* Video Background */
+    .video-background {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -2;
+        overflow: hidden;
+    }}
+
+    #bg-video {{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }}
+
+    /* Overlay */
+    .overlay {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+    }}
+
+
+    /* Main container styling */
+    .main-container {{
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -42,38 +77,34 @@ st.markdown("""
         min-height: 100vh;
         padding: 2rem;
         text-align: center;
-    }
-    
-    /* Title styling exactly like Flask */
-    .main-title {
+        color: white;
+        font-family: 'Poppins', sans-serif;
+    }}
+
+    .main-title {{
         font-size: 3rem;
         font-weight: 700;
         text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
         margin-bottom: 0.5rem;
-        color: white;
-    }
-    
-    .main-subtitle {
+    }}
+
+    .main-subtitle {{
         font-size: 1.2rem;
         font-weight: 300;
         margin-bottom: 2rem;
         max-width: 600px;
-        color: rgba(255,255,255,0.9);
-    }
-    
-    /* Content wrapper exactly like Flask */
-    .content-wrapper {
+    }}
+
+    .content-wrapper {{
         display: flex;
         justify-content: center;
         align-items: flex-start;
         gap: 2rem;
         width: 100%;
         max-width: 1200px;
-        margin-top: 2rem;
-    }
-    
-    /* Upload box styling exactly like Flask */
-    .upload-box, .result-box {
+    }}
+
+    .upload-box, .result-box {{
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -81,128 +112,129 @@ st.markdown("""
         padding: 2rem;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         flex-grow: 1;
-        max-width: 500px;
-    }
+        width: 100%;
+    }}
     
-    .upload-box h2, .result-box h2 {
+    .upload-box {{
+         max-width: 500px;
+    }}
+
+    .result-box {{
+        text-align: left;
+    }}
+
+    .upload-box h2, .result-box h2 {{
         font-size: 1.8rem;
         margin-bottom: 1.5rem;
         font-weight: 600;
         border-bottom: 2px solid rgba(26, 188, 156, 0.8);
         padding-bottom: 0.5rem;
         display: inline-block;
+    }}
+
+    /* Styling for the file uploader */
+    .stFileUploader > div > div > button {{
+        background-color: #1abc9c;
         color: white;
-    }
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 600;
+        border: none;
+        transition: background-color 0.3s ease;
+    }}
+    .stFileUploader > div > div > button:hover {{
+        background-color: #16a085;
+    }}
     
-    /* File uploader styling like Flask */
-    .stFileUploader {
-        background: rgba(0,0,0,0.3);
-        border-radius: 10px;
-        padding: 10px;
-        border: 2px dashed rgba(26, 188, 156, 0.5);
-        margin: 1.5rem 0;
-    }
-    
-    .stFileUploader label {
-        color: #ddd !important;
+    .stFileUploader > div > div > [data-testid="stMarkdownContainer"] > p {{
         font-style: italic;
-    }
-    
-    /* Button styling exactly like Flask */
-    .stButton > button {
+        color: #ddd;
+    }}
+
+    /* Styling for the Diagnose button */
+    .stButton > button {{
         width: 100%;
         padding: 15px;
         border: none;
-        background: linear-gradient(45deg, #1abc9c, #16a085);
+        background-color: #1abc9c;
         color: white;
         font-size: 1.2rem;
         font-weight: 600;
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.3s ease;
-    }
-    
-    .stButton > button:hover {
-        background: linear-gradient(45deg, #16a085, #1abc9c);
+    }}
+    .stButton > button:hover {{
+        background-color: #16a085;
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
-    }
+    }}
+    .stButton > button:disabled {{
+        background-color: #7f8c8d;
+        cursor: not-allowed;
+    }}
     
-    /* Image styling */
-    .stImage > img {
-        border-radius: 10px;
-        border: 3px solid #1abc9c;
-    }
-    
-    /* Result content styling like Flask */
-    .result-content {
+    /* Result styling */
+    .result-content {{
         display: flex;
         gap: 1.5rem;
         align-items: center;
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .result-details h3 {
+    }}
+    .result-image {{
+        width: 150px;
+        height: 150px;
+        border-radius: 10px;
+        object-fit: cover;
+        border: 3px solid #1abc9c;
+    }}
+    .result-details h3 {{
         font-size: 1.3rem;
         margin-bottom: 1rem;
-        color: white;
-    }
-    
-    .result-details p {
+    }}
+    .result-details p {{
         margin-bottom: 0.75rem;
         line-height: 1.6;
-        font-weight: 300;
-        color: rgba(255,255,255,0.9);
-    }
-    
-    .result-details strong {
+    }}
+    .result-details strong {{
         font-weight: 600;
         color: #1abc9c;
-    }
-    
-    /* Success/Info/Warning boxes */
-    .stSuccess, .stInfo, .stWarning {
-        background: rgba(26, 188, 156, 0.2);
-        border: 1px solid #1abc9c;
-        border-radius: 10px;
-        color: white;
-    }
-    
-    /* Progress bar */
-    .stProgress .st-bo {
-        background-color: #1abc9c;
-    }
-    
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .content-wrapper {
+    }}
+
+    /* Responsive Design */
+    @media (max-width: 992px) {{
+        .content-wrapper {{
             flex-direction: column;
             align-items: center;
-        }
-        
-        .upload-box, .result-box {
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .main-title {
-            font-size: 2.2rem;
-        }
-        
-        .main-subtitle {
-            font-size: 1rem;
-        }
-    }
+        }}
+    }}
+     @media (max-width: 768px) {{
+        .result-content {{
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }}
+    }}
 </style>
 """, unsafe_allow_html=True)
 
+# --- Background ---
+if video_base64:
+    st.markdown(f"""
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="data:video/mp4;base64,{video_base64}" type="video/mp4">
+        </video>
+    </div>
+    <div class="overlay"></div>
+    """, unsafe_allow_html=True)
 
-# Load model and disease info
+
+# --- Model and Data Loading ---
 @st.cache_resource
 def load_model():
     try:
-        return tf.keras.models.load_model('models/plant_disease_recog_model.keras')
+        model = tf.keras.models.load_model("models/plant_disease_recog_model.keras")
+        return model
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
@@ -210,139 +242,78 @@ def load_model():
 @st.cache_data
 def load_disease_info():
     try:
-        with open('plant_disease.json', 'r') as f:
-            return json.load(f)
+        with open("plant_disease.json", 'r') as file:
+            return json.load(file)
     except Exception as e:
-        st.error(f"Error loading disease information: {e}")
-        return []
+        st.error(f"Error loading disease data: {e}")
+        return None
 
-def predict_disease(image, model, disease_info):
-    # Save uploaded image temporarily to match Flask processing
-    import tempfile
-    import os
-    
-    # Create temporary file
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
-        image.save(tmp_file.name)
-        temp_path = tmp_file.name
-    
-    try:
-        # Use EXACT same preprocessing as Flask app
-        loaded_image = tf.keras.utils.load_img(temp_path, target_size=(160, 160))
-        img_array = tf.keras.utils.img_to_array(loaded_image)
-        img_array = np.array([img_array])  # Add batch dimension
-        
-        # Make prediction
-        prediction = model.predict(img_array)
-        predicted_class = np.argmax(prediction)
-        confidence = float(np.max(prediction) * 100)  # Convert to Python float
-        
-        return disease_info[predicted_class], confidence
-        
-    finally:
-        # Clean up temporary file
-        try:
-            os.unlink(temp_path)
-        except:
-            pass
+model = load_model()
+plant_disease_info = load_disease_info()
 
-# Main app
-# Main app exactly like Flask layout
-def main():
-    # Main content container
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
+
+# --- Prediction Function ---
+def model_predict(image_data, model, disease_info):
+    img = Image.open(image_data).resize((160, 160))
+    feature = tf.keras.utils.img_to_array(img)
+    feature = np.array([feature])
     
-    # Title and subtitle exactly like Flask
-    st.markdown("""
-    <h1 class="main-title">Plant Disease Recognition System</h1>
-    <p class="main-subtitle">Upload an image of a plant leaf to identify diseases and find cures.</p>
-    """, unsafe_allow_html=True)
+    prediction = model.predict(feature)
+    predicted_class_index = prediction.argmax()
     
-    # Load model and data
-    model = load_model()
-    disease_info = load_disease_info()
+    if disease_info and 0 <= predicted_class_index < len(disease_info):
+        return disease_info[predicted_class_index]
+    return {"name": "Unknown", "cause": "N/A", "cure": "N/A"}
+
+
+# --- Streamlit App Layout ---
+st.markdown('<main class="main-container">', unsafe_allow_html=True)
+
+st.markdown('<h1 class="main-title">Plant Disease Recognition System</h1>', unsafe_allow_html=True)
+st.markdown('<p class="main-subtitle">Upload an image of a plant leaf to identify diseases and find cures.</p>', unsafe_allow_html=True)
+
+# Use columns to manage layout
+col1, col2 = st.columns([1.5, 2]) # Adjust ratio as needed
+
+with col1:
+    st.markdown('<div class="upload-box">', unsafe_allow_html=True)
+    st.markdown('<h2>Analyze Leaf Image</h2>', unsafe_allow_html=True)
     
-    if model is None or not disease_info:
-        st.error("Failed to load model or disease information.")
-        return
+    uploaded_file = st.file_uploader(
+        "Choose a file", 
+        type=['jpg', 'jpeg', 'png'], 
+        label_visibility="collapsed"
+    )
     
-    # Content wrapper exactly like Flask
-    st.markdown('<div class="content-wrapper">', unsafe_allow_html=True)
+    diagnose_button = st.button("Diagnose", use_container_width=True, disabled=not uploaded_file)
     
-    # Create two columns exactly like Flask
-    col1, col2 = st.columns([1, 1], gap="large")
-    
-    with col1:
-        # Upload box exactly like Flask
-        st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-        st.markdown('<h2>Analyze Leaf Image</h2>', unsafe_allow_html=True)
-        
-        # File uploader
-        uploaded_file = st.file_uploader(
-            "Choose File", 
-            type=['jpg', 'jpeg', 'png'],
-            label_visibility="collapsed"
-        )
-        
-        if uploaded_file:
-            st.write(f"📁 {uploaded_file.name}")
-        else:
-            st.write("📁 No file chosen")
-        
-        # Diagnose button
-        diagnose_clicked = st.button('Diagnose', disabled=(uploaded_file is None))
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col2:
-        # Result box exactly like Flask
-        st.markdown('<div class="result-box">', unsafe_allow_html=True)
-        st.markdown('<h2>Diagnosis Result</h2>', unsafe_allow_html=True)
-        
-        if uploaded_file and diagnose_clicked:
-            # Display uploaded image
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Plant Leaf", width=200)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+with col2:
+    if diagnose_button and uploaded_file is not None and model is not None:
+        with st.spinner('Analyzing...'):
+            prediction = model_predict(uploaded_file, model, plant_disease_info)
+
+            st.markdown('<div class="result-box">', unsafe_allow_html=True)
+            st.markdown('<h2>Diagnosis Result</h2>', unsafe_allow_html=True)
             
-            # Analyze
-            with st.spinner('Analyzing...'):
-                try:
-                    result, confidence = predict_disease(image, model, disease_info)
-                    
-                    # Display results exactly like Flask
-                    st.markdown('<div class="result-content">', unsafe_allow_html=True)
-                    
-                    st.markdown(f"### 🏷️ Plant: {result['name']}")
-                    st.markdown(f"**📊 Confidence:** {confidence:.1f}%")
-                    
-                    # Progress bar
-                    st.progress(confidence/100)
-                    
-                    # Cause and cure
-                    st.markdown("**🦠 Cause:**")
-                    st.info(result['cause'])
-                    
-                    st.markdown("**💊 Cure:**")
-                    st.success(result['cure'])
-                    
-                    # Health status
-                    if 'healthy' in result['name'].lower():
-                        st.balloons()
-                        st.success("🎉 Great News! Your plant appears to be healthy!")
-                    else:
-                        st.warning("⚠️ Action Required: Please follow the treatment recommendations.")
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    
-                except Exception as e:
-                    st.error(f"Error during analysis: {e}")
-        else:
-            st.info("Upload a plant leaf image and click 'Diagnose' to see results here.")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)  # Close content-wrapper
-    st.markdown('</div>', unsafe_allow_html=True)  # Close main-content
+            # Display result
+            st.markdown(f"""
+            <div class="result-content">
+                <img src="data:image/png;base64,{base64.b64encode(uploaded_file.getvalue()).decode()}" class="result-image">
+                <div class="result-details">
+                    <h3><strong>Plant:</strong> {prediction.get('name', 'N/A')}</h3>
+                    <p><strong>Cause:</strong> {prediction.get('cause', 'N/A')}</p>
+                    <p><strong>Cure:</strong> {prediction.get('cure', 'N/A')}</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        # Placeholder so the layout doesn't shift
+        st.markdown('<div style="height: 300px;"></div>', unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    main()
+
+st.markdown('</main>', unsafe_allow_html=True)
