@@ -102,7 +102,6 @@ def uploadimage():
             
             image_url = url_for('uploaded_images', filename=filename)
             
-            # Return JSON response for AJAX
             return jsonify({
                 'success': True,
                 'prediction': prediction,
