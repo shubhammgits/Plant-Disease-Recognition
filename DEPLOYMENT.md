@@ -126,23 +126,41 @@ After deployment:
 3. **Prediction Test**: Verify disease prediction works
 4. **Mobile Test**: Check mobile responsiveness
 
-## 🔍 Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues:
 
-1. **Build Fails**
+1. **Build Fails - TensorFlow Version Error**
+   ```
+   ERROR: Could not find a version that satisfies the requirement tensorflow==2.13.0
+   ```
+   **Solution**: Use the updated requirements.txt with tensorflow==2.12.0
+   
+   If still failing, try using CPU-only version:
+   ```bash
+   # Replace requirements.txt content with:
+   Flask==2.3.3
+   tensorflow-cpu==2.12.0
+   numpy==1.23.5
+   Pillow==10.0.0
+   Werkzeug==2.3.7
+   gunicorn==21.2.0
+   ```
+
+2. **Build Fails - General**
    - Check `requirements.txt` has correct versions
    - Ensure all files are in repository
+   - Try using `requirements-alt.txt` (CPU-only TensorFlow)
 
-2. **App Crashes**
+3. **App Crashes**
    - Check logs in hosting platform dashboard
    - Verify model file is uploaded correctly
 
-3. **Slow Loading**
+4. **Slow Loading**
    - First request after sleep takes 10-30 seconds (normal)
    - Subsequent requests are fast
 
-4. **Memory Issues**
+5. **Memory Issues**
    - TensorFlow is memory-intensive
    - Consider using TensorFlow Lite for smaller deployments
 
