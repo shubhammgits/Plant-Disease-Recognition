@@ -125,6 +125,7 @@ Streamlit will automatically redeploy!
    numpy>=1.24.0
    Pillow>=10.0.0
    ```
+   
 
 2. **"installer returned a non-zero exit code" Error**
    - This indicates dependency version conflicts
