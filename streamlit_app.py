@@ -9,32 +9,190 @@ import io
 st.set_page_config(
     page_title="Plant Disease Recognition System",
     page_icon="🌱",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for better styling
+# Enhanced CSS to match Flask app exactly
 st.markdown("""
 <style>
-    .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Hide Streamlit branding completely */
+    #MainMenu {visibility: hidden;}
+    .stDeployButton {display:none;}
+    footer {visibility: hidden;}
+    .stApp > header {visibility: hidden;}
+    .stSidebar {display: none;}
+    
+    /* Full screen background like Flask */
+    .stApp {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23134e5e;stop-opacity:1" /><stop offset="100%" style="stop-color:%23071e26;stop-opacity:1" /></radialGradient></defs><rect width="1920" height="1080" fill="url(%23bg)"/><circle cx="200" cy="200" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="400" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="1200" cy="300" r="4" fill="rgba(255,255,255,0.1)"/><circle cx="1600" cy="700" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        background-size: cover;
+        background-attachment: fixed;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Main container styling exactly like Flask */
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    /* Title styling exactly like Flask */
+    .main-title {
+        font-size: 3rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        margin-bottom: 0.5rem;
         color: white;
     }
-    .stApp {
-        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    
+    .main-subtitle {
+        font-size: 1.2rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        color: rgba(255,255,255,0.9);
     }
-    .uploadedFile {
+    
+    /* Content wrapper exactly like Flask */
+    .content-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        width: 100%;
+        max-width: 1200px;
+        margin-top: 2rem;
+    }
+    
+    /* Upload box styling exactly like Flask */
+    .upload-box, .result-box {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        flex-grow: 1;
+        max-width: 500px;
+    }
+    
+    .upload-box h2, .result-box h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(26, 188, 156, 0.8);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+        color: white;
+    }
+    
+    /* File uploader styling like Flask */
+    .stFileUploader {
+        background: rgba(0,0,0,0.3);
         border-radius: 10px;
+        padding: 10px;
+        border: 2px dashed rgba(26, 188, 156, 0.5);
+        margin: 1.5rem 0;
     }
-    .stButton>button {
+    
+    .stFileUploader label {
+        color: #ddd !important;
+        font-style: italic;
+    }
+    
+    /* Button styling exactly like Flask */
+    .stButton > button {
+        width: 100%;
+        padding: 15px;
+        border: none;
         background: linear-gradient(45deg, #1abc9c, #16a085);
         color: white;
-        border: none;
+        font-size: 1.2rem;
+        font-weight: 600;
         border-radius: 10px;
-        padding: 10px 20px;
-        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
+    
+    .stButton > button:hover {
+        background: linear-gradient(45deg, #16a085, #1abc9c);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+    }
+    
+    /* Image styling */
+    .stImage > img {
+        border-radius: 10px;
+        border: 3px solid #1abc9c;
+    }
+    
+    /* Result content styling like Flask */
+    .result-content {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .result-details h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: white;
+    }
+    
+    .result-details p {
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+        font-weight: 300;
+        color: rgba(255,255,255,0.9);
+    }
+    
+    .result-details strong {
+        font-weight: 600;
+        color: #1abc9c;
+    }
+    
+    /* Success/Info/Warning boxes */
+    .stSuccess, .stInfo, .stWarning {
+        background: rgba(26, 188, 156, 0.2);
+        border: 1px solid #1abc9c;
+        border-radius: 10px;
+        color: white;
+    }
+    
+    /* Progress bar */
     .stProgress .st-bo {
         background-color: #1abc9c;
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .upload-box, .result-box {
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .main-title {
+            font-size: 2.2rem;
+        }
+        
+        .main-subtitle {
+            font-size: 1rem;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -89,120 +247,102 @@ def predict_disease(image, model, disease_info):
             pass
 
 # Main app
+# Main app exactly like Flask layout
 def main():
-    # Header with Flask-like styling
+    # Main content container
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
+    
+    # Title and subtitle exactly like Flask
     st.markdown("""
-    <div style='text-align: center; padding: 2rem; background: rgba(0,0,0,0.1); border-radius: 15px; margin-bottom: 2rem;'>
-        <h1 style='color: #1abc9c; font-size: 3rem; margin-bottom: 1rem;'>🌱 Plant Disease Recognition System</h1>
-        <p style='font-size: 1.2rem; color: #ecf0f1;'>Upload an image of a plant leaf to identify diseases and get treatment recommendations.</p>
-        <p style='font-size: 1rem; color: #bdc3c7;'><strong>Supported plants:</strong> Apple, Blueberry, Cherry, Corn, Grape, Orange, Peach, Pepper, Potato, Raspberry, Soybean, Squash, Strawberry, Tomato</p>
-    </div>
+    <h1 class="main-title">Plant Disease Recognition System</h1>
+    <p class="main-subtitle">Upload an image of a plant leaf to identify diseases and find cures.</p>
     """, unsafe_allow_html=True)
     
     # Load model and data
-    with st.spinner('Loading AI model...'):
-        model = load_model()
-        disease_info = load_disease_info()
+    model = load_model()
+    disease_info = load_disease_info()
     
     if model is None or not disease_info:
-        st.error("Failed to load model or disease information. Please check the files.")
+        st.error("Failed to load model or disease information.")
         return
     
-    st.success("✅ AI model loaded successfully!")
-    st.markdown("---")
+    # Content wrapper exactly like Flask
+    st.markdown('<div class="content-wrapper">', unsafe_allow_html=True)
     
-    # Sidebar with information
-    with st.sidebar:
-        st.header("📊 Model Information")
-        st.write("**Accuracy:** 97.11%")
-        st.write("**Model Type:** CNN")
-        st.write("**Input Size:** 160x160 pixels")
-        st.write("**Diseases:** 39 types")
-        st.write("**Plants:** 14 species")
-        
-        st.header("📖 How to Use")
-        st.write("1. Upload a clear image of a plant leaf")
-        st.write("2. Click 'Analyze Disease'")
-        st.write("3. Get instant diagnosis and treatment")
-        
-        st.header("💡 Tips")
-        st.write("• Use clear, well-lit images")
-        st.write("• Focus on the leaf")
-        st.write("• Avoid blurry photos")
+    # Create two columns exactly like Flask
+    col1, col2 = st.columns([1, 1], gap="large")
     
-    # File uploader
-    uploaded_file = st.file_uploader(
-        "Choose a plant leaf image...", 
-        type=['jpg', 'jpeg', 'png'],
-        help="Upload a clear image of a plant leaf for disease analysis"
-    )
+    with col1:
+        # Upload box exactly like Flask
+        st.markdown('<div class="upload-box">', unsafe_allow_html=True)
+        st.markdown('<h2>Analyze Leaf Image</h2>', unsafe_allow_html=True)
+        
+        # File uploader
+        uploaded_file = st.file_uploader(
+            "Choose File", 
+            type=['jpg', 'jpeg', 'png'],
+            label_visibility="collapsed"
+        )
+        
+        if uploaded_file:
+            st.write(f"📁 {uploaded_file.name}")
+        else:
+            st.write("📁 No file chosen")
+        
+        # Diagnose button
+        diagnose_clicked = st.button('Diagnose', disabled=(uploaded_file is None))
+        
+        st.markdown('</div>', unsafe_allow_html=True)
     
-    if uploaded_file is not None:
-        # Display uploaded image
-        image = Image.open(uploaded_file)
+    with col2:
+        # Result box exactly like Flask
+        st.markdown('<div class="result-box">', unsafe_allow_html=True)
+        st.markdown('<h2>Diagnosis Result</h2>', unsafe_allow_html=True)
         
-        # Create two columns for layout
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("📷 Uploaded Image")
-            st.image(image, caption='Your Plant Leaf Image', use_column_width=True)
-        
-        with col2:
-            st.subheader("🔍 Analysis")
+        if uploaded_file and diagnose_clicked:
+            # Display uploaded image
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Uploaded Plant Leaf", width=200)
             
-            # Analyze button
-            if st.button('🔬 Analyze Disease', type="primary"):
-                with st.spinner('Analyzing your plant...'):
-                    try:
-                        result, confidence = predict_disease(image, model, disease_info)
-                        
-                        # Display results
-                        st.success('✅ Analysis Complete!')
-                        
-                        # Results in an attractive format
-                        st.markdown("### 📋 Diagnosis Results")
-                        
-                        # Disease name with confidence
-                        st.markdown(f"**🏷️ Disease:** {result['name']}")
-                        st.markdown(f"**📊 Confidence:** {confidence:.1f}%")
-                        
-                        # Progress bar for confidence
-                        st.progress(float(confidence/100))
-                        
-                        # Cause and treatment
-                        st.markdown("**🦠 Cause:**")
-                        st.info(result['cause'])
-                        
-                        st.markdown("**💊 Treatment:**")
-                        st.success(result['cure'])
-                        
-                        # Health status indicator
-                        if 'healthy' in result['name'].lower():
-                            st.balloons()
-                            st.markdown("### 🎉 Great News!")
-                            st.success("Your plant appears to be healthy!")
-                        else:
-                            st.markdown("### ⚠️ Action Required")
-                            st.warning("Please follow the treatment recommendations above.")
-                            
-                    except Exception as e:
-                        st.error(f"Error during analysis: {e}")
+            # Analyze
+            with st.spinner('Analyzing...'):
+                try:
+                    result, confidence = predict_disease(image, model, disease_info)
+                    
+                    # Display results exactly like Flask
+                    st.markdown('<div class="result-content">', unsafe_allow_html=True)
+                    
+                    st.markdown(f"### 🏷️ Plant: {result['name']}")
+                    st.markdown(f"**📊 Confidence:** {confidence:.1f}%")
+                    
+                    # Progress bar
+                    st.progress(confidence/100)
+                    
+                    # Cause and cure
+                    st.markdown("**🦠 Cause:**")
+                    st.info(result['cause'])
+                    
+                    st.markdown("**💊 Cure:**")
+                    st.success(result['cure'])
+                    
+                    # Health status
+                    if 'healthy' in result['name'].lower():
+                        st.balloons()
+                        st.success("🎉 Great News! Your plant appears to be healthy!")
+                    else:
+                        st.warning("⚠️ Action Required: Please follow the treatment recommendations.")
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                except Exception as e:
+                    st.error(f"Error during analysis: {e}")
+        else:
+            st.info("Upload a plant leaf image and click 'Diagnose' to see results here.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
     
-    # Footer
-    st.markdown("---")
-    st.markdown("### 🌿 About This System")
-    st.write("This AI-powered system uses deep learning to identify plant diseases with 97.11% accuracy. "
-             "It can recognize 39 different diseases across 14 plant species, helping farmers and gardeners "
-             "make informed decisions about plant health management.")
-    
-    # Additional information
-    with st.expander("📚 Supported Diseases and Plants"):
-        st.write("**Apple:** Apple Scab, Black Rot, Cedar Apple Rust, Healthy")
-        st.write("**Corn:** Cercospora Leaf Spot, Common Rust, Northern Leaf Blight, Healthy")
-        st.write("**Tomato:** Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Septoria Leaf Spot, Spider Mites, Target Spot, Yellow Leaf Curl Virus, Mosaic Virus, Healthy")
-        st.write("**Grape:** Black Rot, Esca, Leaf Blight, Healthy")
-        st.write("**And many more...**")
+    st.markdown('</div>', unsafe_allow_html=True)  # Close content-wrapper
+    st.markdown('</div>', unsafe_allow_html=True)  # Close main-content
 
 if __name__ == "__main__":
     main()
