@@ -20,12 +20,16 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: -2;
+    overflow: hidden;
 }
 
 #bg-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .overlay {
@@ -91,6 +95,18 @@ html, body {
 .result-box {
     flex-basis: 500px;
     text-align: left;
+    animation: fadeInSlide 0.5s ease-in-out;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .upload-box h2, .result-box h2 {
@@ -153,6 +169,13 @@ input[type="file"] {
     background-color: #16a085;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+}
+
+.submit-btn:disabled {
+    background-color: #7f8c8d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .result-content {

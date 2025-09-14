@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,send_from_directory,url_for
+from flask import Flask, render_template,request,redirect,send_from_directory,url_for,jsonify
 import numpy as np
 import json
 import uuid
@@ -58,6 +58,10 @@ with open("plant_disease.json",'r') as file:
 def uploaded_images(filename):
     return send_from_directory('uploadimages', filename)
 
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
+
 @app.route('/',methods = ['GET'])
 def home():
     return render_template('home.html')
@@ -77,21 +81,41 @@ def model_predict(image):
 @app.route('/upload/',methods = ['POST','GET'])
 def uploadimage():
     if request.method == "POST":
-        image = request.files['img']
-        upload_folder = 'uploadimages'
-        if not os.path.exists(upload_folder):
-            os.makedirs(upload_folder)
+        try:
+            image = request.files['img']
+            if not image or image.filename == '':
+                return jsonify({
+                    'success': False,
+                    'error': 'No file selected'
+                })
             
-        filename = f"temp_{uuid.uuid4().hex}_{image.filename}"
-        image_path = os.path.join(upload_folder, filename)
-        image.save(image_path)
-        
-        print(image_path)
-        prediction = model_predict(image_path)
-        
-        image_url = url_for('uploaded_images', filename=filename)
-        
-        return render_template('home.html',result = "True",prediction = prediction, imagepath = image_url)
+            upload_folder = 'uploadimages'
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+                
+            filename = f"temp_{uuid.uuid4().hex}_{image.filename}"
+            image_path = os.path.join(upload_folder, filename)
+            image.save(image_path)
+            
+            print(image_path)
+            prediction = model_predict(image_path)
+            
+            image_url = url_for('uploaded_images', filename=filename)
+            
+            # Return JSON response for AJAX
+            return jsonify({
+                'success': True,
+                'prediction': prediction,
+                'imagepath': image_url
+            })
+            
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            })
+    
     return redirect('/')
 
 if __name__ == '__main__':

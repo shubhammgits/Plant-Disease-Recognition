@@ -12,8 +12,8 @@
 </head>
 <body>
     <div class="video-background">
-        <video autoplay muted loop playsinline id="bg-video">
-            <source src="static\images\166823-835662276.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline preload="auto" id="bg-video">
+            <source src="static/images/166823-835662276.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -37,35 +37,93 @@
                     <button type="submit" class="submit-btn">Diagnose</button>
                 </form>
             </div>
-
-            {% if result %}
-            <div class="result-box">
-                <h2>Diagnosis Result</h2>
-                <div class="result-content">
-                    <div class="result-image-container">
-                        <img src="{{imagepath}}" alt="Uploaded Leaf Image" class="result-image">
-                    </div>
-                    <div class="result-details">
-                        <h3>
-                          <strong>Plant:</strong> {{prediction['name']}}
-                        </h3>
-                        <p>
-                          <strong>Cause:</strong> {{prediction['cause']}}
-                        </p>
-                        <p>
-                          <strong>Cure:</strong> {{prediction['cure']}}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </main>
 
     <script>
+        // File upload handler
         document.getElementById('file-upload').addEventListener('change', function() {
             var fileName = this.files[0] ? this.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
+        });
+
+        // Ensure video keeps playing after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var bgVideo = document.getElementById('bg-video');
+            if (bgVideo) {
+                // Force video to play and loop
+                bgVideo.muted = true;
+                bgVideo.loop = true;
+                bgVideo.autoplay = true;
+                
+                // Try to play the video
+                var playPromise = bgVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(error) {
+                        console.log('Video autoplay failed:', error);
+                    });
+                }
+            }
+        });
+
+        // AJAX form submission to avoid page reload and maintain video
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+            var submitBtn = document.querySelector('.submit-btn');
+            var originalText = submitBtn.textContent;
+            
+            // Show loading state
+            submitBtn.textContent = 'Analyzing...';
+            submitBtn.disabled = true;
+            
+            // Hide any existing result
+            var existingResult = document.querySelector('.result-box');
+            if (existingResult) {
+                existingResult.remove();
+            }
+            
+            fetch('/upload/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                if (data.success) {
+                    // Create result box
+                    var resultBox = document.createElement('div');
+                    resultBox.className = 'result-box';
+                    resultBox.innerHTML = `
+                        <h2>Diagnosis Result</h2>
+                        <div class="result-content">
+                            <div class="result-image-container">
+                                <img src="${data.imagepath}" alt="Uploaded Leaf Image" class="result-image">
+                            </div>
+                            <div class="result-details">
+                                <h3><strong>Plant:</strong> ${data.prediction.name}</h3>
+                                <p><strong>Cause:</strong> ${data.prediction.cause}</p>
+                                <p><strong>Cure:</strong> ${data.prediction.cure}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add result box to content wrapper
+                    document.querySelector('.content-wrapper').appendChild(resultBox);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                alert('An error occurred while processing the image.');
+            });
         });
     </script>
 </body>
