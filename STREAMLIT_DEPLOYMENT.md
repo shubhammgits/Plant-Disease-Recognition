@@ -113,7 +113,20 @@ Streamlit will automatically redeploy!
 
 #### Common Issues:
 
-1. **"installer returned a non-zero exit code" Error**
+#### 1. **"tensorflow-cpu==2.10.0 has no wheels with a matching Python ABI tag" Error**
+   - **Root Cause**: Streamlit Cloud uses Python 3.13.6, but TensorFlow 2.10.0 doesn't support it
+   - **Solution**: Updated requirements.txt to use latest compatible versions
+   - **Current Fix**: Using version-free requirements (automatically gets latest compatible)
+   
+   **If still failing, try this specific version:**
+   ```txt
+   streamlit>=1.28.0
+   tensorflow>=2.15.0
+   numpy>=1.24.0
+   Pillow>=10.0.0
+   ```
+
+2. **"installer returned a non-zero exit code" Error**
    - This indicates dependency version conflicts
    - **Solution**: Use the updated requirements.txt with older, stable versions
    - If still failing, replace requirements.txt with:
