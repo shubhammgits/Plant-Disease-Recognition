@@ -17,3 +17,4 @@ COPY . .
 # Tell the container to run your app using gunicorn, a production-ready server
 # It listens on port 7860, which is what Hugging Face expects
 CMD ["gunicorn", "--bind", "0.0.0.0:7860", "app:app"]
+
