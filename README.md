@@ -52,7 +52,7 @@ Our deep learning model uses a custom CNN architecture optimized for plant disea
 - **Dense Layers**: Fully connected layers for final classification
 - **Output Layer**: 39-class softmax layer for disease prediction
 
-<img src="static/images/model_architecture.png" alt="Model Architecture" width="45%">
+<img src="static/images/model_architecture.png" alt="Model Architecture" width="45%" style="margin-left: 2%; margin-right: 2%;">
 
 ## 🏗️ How It's Made
 
