@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,send_from_directory,url_for,jsonify
+from flask import Flask, render_template, request, redirect, send_from_directory, url_for, jsonify
 import numpy as np
 import json
 import uuid
@@ -50,7 +50,7 @@ label = ['Apple___Apple_scab',
  'Tomato___Tomato_mosaic_virus',
  'Tomato___healthy']
 
-with open("plant_disease.json",'r') as file:
+with open("plant_disease.json", 'r') as file:
     plant_disease = json.load(file)
 
 
@@ -62,15 +62,17 @@ def uploaded_images(filename):
 def static_files(filename):
     return send_from_directory('static', filename)
 
-@app.route('/',methods = ['GET'])
+@app.route('/', methods=['GET'])
 def home():
     return render_template('home.html')
 
+
 def extract_features(image):
-    image = tf.keras.utils.load_img(image,target_size=(160,160))
+    image = tf.keras.utils.load_img(image, target_size=(160, 160))
     feature = tf.keras.utils.img_to_array(image)
     feature = np.array([feature])
     return feature
+
 
 def model_predict(image):
     img = extract_features(image)
@@ -78,7 +80,8 @@ def model_predict(image):
     prediction_label = plant_disease[prediction.argmax()]
     return prediction_label
 
-@app.route('/upload/',methods = ['POST','GET'])
+
+@app.route('/upload/', methods=['POST', 'GET'])
 def uploadimage():
     if request.method == "POST":
         try:
@@ -88,38 +91,31 @@ def uploadimage():
                     'success': False,
                     'error': 'No file selected'
                 })
-            
+
             upload_folder = 'uploadimages'
             if not os.path.exists(upload_folder):
                 os.makedirs(upload_folder)
-                
+
             filename = f"temp_{uuid.uuid4().hex}_{image.filename}"
             image_path = os.path.join(upload_folder, filename)
             image.save(image_path)
-            
+
             print(image_path)
             prediction = model_predict(image_path)
-            
+
             image_url = url_for('uploaded_images', filename=filename)
-            
+
             return jsonify({
                 'success': True,
                 'prediction': prediction,
                 'imagepath': image_url
             })
-            
+
         except Exception as e:
             print(f"Error: {str(e)}")
             return jsonify({
                 'success': False,
                 'error': str(e)
             })
-    
+
     return redirect('/')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-import os
-app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
