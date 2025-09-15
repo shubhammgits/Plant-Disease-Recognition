@@ -1,4 +1,6 @@
-# 🌱 Plant Disease Recognition System
+# 🌱 Plant Disease Recognition System 
+
+# Live: https://plant-disease-recognition.up.railway.app/
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
