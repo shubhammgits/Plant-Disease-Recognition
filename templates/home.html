@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Recognition</title>
+    <link rel="icon" href="../static/images/logo.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay muted loop playsinline preload="auto" id="bg-video">
+            <source src="static/images/166823-835662276.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <main class="main-container">
+        <h1 class="main-title">Plant Disease Recognition System</h1>
+        <p class="main-subtitle">Upload an image of a plant leaf to identify diseases and find cures.</p>
+
+        <div class="content-wrapper">
+            <div class="upload-box">
+                <form action="/upload/" method="POST" enctype="multipart/form-data" id="upload-form">
+                    <h2>Analyze Leaf Image</h2>
+                    <div class="input-box">
+                        <label for="file-upload" class="custom-file-upload">
+                            Choose File
+                        </label>
+                        <input id="file-upload" type="file" accept="image/png, image/jpeg" name="img" required>
+                        <span id="file-name">No file chosen</span>
+                    </div>
+                    <button type="submit" class="submit-btn">Diagnose</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('file-upload').addEventListener('change', function() {
+            var fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.getElementById('file-name').textContent = fileName;
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var bgVideo = document.getElementById('bg-video');
+            if (bgVideo) {
+                bgVideo.muted = true;
+                bgVideo.loop = true;
+                bgVideo.autoplay = true;
+                
+                var playPromise = bgVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(error) {
+                        console.log('Video autoplay failed:', error);
+                    });
+                }
+            }
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+            var submitBtn = document.querySelector('.submit-btn');
+            var originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Analyzing...';
+            submitBtn.disabled = true;
+            
+            var existingResult = document.querySelector('.result-box');
+            if (existingResult) {
+                existingResult.remove();
+            }
+            
+            fetch('/upload/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                if (data.success) {
+                    var resultBox = document.createElement('div');
+                    resultBox.className = 'result-box';
+                    resultBox.innerHTML = `
+                        <h2>Diagnosis Result</h2>
+                        <div class="result-content">
+                            <div class="result-image-container">
+                                <img src="${data.imagepath}" alt="Uploaded Leaf Image" class="result-image">
+                            </div>
+                            <div class="result-details">
+                                <h3><strong>Plant:</strong> ${data.prediction.name}</h3>
+                                <p><strong>Cause:</strong> ${data.prediction.cause}</p>
+                                <p><strong>Cure:</strong> ${data.prediction.cure}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.querySelector('.content-wrapper').appendChild(resultBox);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                alert('An error occurred while processing the image.');
+            });
+        });
+    </script>
+</body>
+</html>

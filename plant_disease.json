@@ -1,0 +1,197 @@
+[
+    {
+        "name": "Apple Apple scab",
+        "cause": "Fungus Venturia inaequalis. Favorable conditions are cool, wet weather.",
+        "cure": "Use fungicides and resistant apple varieties. Prune and destroy infected leaves."
+    },
+    {
+        "name": "Apple Black rot",
+        "cause": "Caused by the fungus Botryosphaeria obtusa.",
+        "cure": "Prune and remove infected areas. Apply fungicides during the growing season."
+    },
+    {
+        "name": "Apple Cedar apple rust",
+        "cause": "Fungus Gymnosporangium juniperi-virginianae. Requires junipers as an alternate host.",
+        "cure": "Remove nearby juniper hosts. Use resistant varieties and fungicides."
+    },
+    {
+        "name": "Apple healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Background without leaves",
+        "cause": "No disease or plant detected.",
+        "cure": "Not applicable."
+    },
+    {
+        "name": "Blueberry healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Cherry Powdery mildew",
+        "cause": "Fungus Podosphaera clandestina.",
+        "cure": "Apply sulfur-based or fungicide treatments. Ensure good air circulation."
+    },
+    {
+        "name": "Cherry healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Corn Cercospora leaf spot Gray leaf spot",
+        "cause": "Fungus Cercospora zeae-maydis.",
+        "cure": "Use resistant hybrids and fungicide sprays."
+    },
+    {
+        "name": "Corn Common rust",
+        "cause": "Fungus Puccinia sorghi.",
+        "cure": "Apply fungicides and plant resistant varieties."
+    },
+    {
+        "name": "Corn Northern Leaf Blight",
+        "cause": "Fungus Exserohilum turcicum.",
+        "cure": "Use resistant varieties and fungicides."
+    },
+    {
+        "name": "Corn healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Grape Black_rot",
+        "cause": "Fungus Guignardia bidwellii.",
+        "cure": "Prune infected areas and apply fungicides."
+    },
+    {
+        "name": "Grape Esca (Black Measles)",
+        "cause": "Fungal complex including Phaeomoniella chlamydospora.",
+        "cure": "Remove infected wood. Avoid injuries to vines."
+    },
+    {
+        "name": "Grape Leaf blight (Isariopsis Leaf Spot)",
+        "cause": "Fungus Pseudocercospora vitis.",
+        "cure": "Apply fungicides and manage vineyard hygiene."
+    },
+    {
+        "name": "Grape healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Orange Haunglongbing (Citrus greening)",
+        "cause": "Bacterium Candidatus Liberibacter spp. Spread by psyllid insects.",
+        "cure": "Control psyllid population and remove infected trees."
+    },
+    {
+        "name": "Peach Bacterial spot",
+        "cause": "Bacterium Xanthomonas campestris pv. pruni.",
+        "cure": "Use resistant varieties and copper-based bactericides."
+    },
+    {
+        "name": "Peach healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Pepper,bell Bacterial spot",
+        "cause": "Bacterium Xanthomonas campestris pv. vesicatoria.",
+        "cure": "Use copper-based bactericides and resistant varieties."
+    },
+    {
+        "name": "Pepper,bell healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Potato Early blight",
+        "cause": "Fungus Alternaria solani.",
+        "cure": "Apply fungicides and practice crop rotation."
+    },
+    {
+        "name": "Potato Late blight",
+        "cause": "Pathogen Phytophthora infestans.",
+        "cure": "Use resistant varieties and fungicides."
+    },
+    {
+        "name": "Potato healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Raspberry healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Soybean healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Squash Powdery mildew",
+        "cause": "Fungal pathogens including Erysiphe cichoracearum.",
+        "cure": "Apply sulfur-based fungicides and maintain good air circulation."
+    },
+    {
+        "name": "Strawberry Leaf scorch",
+        "cause": "Fungus Diplocarpon earlianum.",
+        "cure": "Remove infected leaves and apply fungicides."
+    },
+    {
+        "name": "Strawberry healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    },
+    {
+        "name": "Tomato Bacterial spot",
+        "cause": "Bacterium Xanthomonas spp.",
+        "cure": "Apply copper-based bactericides and practice crop rotation."
+    },
+    {
+        "name": "Tomato Early blight",
+        "cause": "Fungus Alternaria solani.",
+        "cure": "Apply fungicides and remove infected leaves."
+    },
+    {
+        "name": "Tomato Late blight",
+        "cause": "Pathogen Phytophthora infestans.",
+        "cure": "Use resistant varieties and fungicides."
+    },
+    {
+        "name": "Tomato Leaf Mold",
+        "cause": "Fungus Passalora fulva.",
+        "cure": "Apply fungicides and ensure good ventilation."
+    },
+    {
+        "name": "Tomato Septoria leaf spot",
+        "cause": "Fungus Septoria lycopersici.",
+        "cure": "Remove infected leaves and apply fungicides."
+    },
+    {
+        "name": "Tomato Spider mites Two-spotted spider mite",
+        "cause": "Spider mites Tetranychus urticae.",
+        "cure": "Use miticides or insecticidal soaps."
+    },
+    {
+        "name": "Tomato Target Spot",
+        "cause": "Fungus Corynespora cassiicola.",
+        "cure": "Apply fungicides and ensure good air circulation."
+    },
+    {
+        "name": "Tomato Tomato Yellow Leaf Curl Virus",
+        "cause": "Virus spread by whiteflies.",
+        "cure": "Control whitefly population and use resistant varieties."
+    },
+    {
+        "name": "Tomato Tomato mosaic virus",
+        "cause": "Virus transmitted through contact and contaminated tools.",
+        "cure": "Remove infected plants and sterilize tools."
+    },
+    {
+        "name": "Tomato healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health."
+    }
+]

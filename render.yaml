@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: plant-disease-recognition
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    buildCommand: ""
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT app:app"
+    envVars:
+      - key: PORT
+        value: "10000"
+        sync: false
+    autoDeploy: true
+    repo: 
+      branch: main
