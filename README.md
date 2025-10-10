@@ -1,5 +1,6 @@
 # 🌱 Plant Disease Recognition System 
 
+<h3>Live : https://plant-disease-recognition-hip3.onrender.com</h3>
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
